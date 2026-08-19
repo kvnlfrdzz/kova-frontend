@@ -25,10 +25,10 @@ let finalTranscript = '';
 document.addEventListener('DOMContentLoaded', async () => {
   // Configure marked
   const renderer = new marked.Renderer();
-  renderer.code = function(codeOrToken, language) {
+  renderer.code = function (codeOrToken, language) {
     let code = '';
     let lang = '';
-    
+
     if (typeof codeOrToken === 'object' && codeOrToken !== null) {
       code = codeOrToken.text || '';
       lang = codeOrToken.lang || '';
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       code = codeOrToken || '';
       lang = language || '';
     }
-    
+
     return `
       <div class="code-block-wrapper">
         <div class="code-block-header">
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     breaks: true,
     gfm: true
   });
-  
+
   // Handle code block copy events
   document.addEventListener('click', (e) => {
     const copyBtn = e.target.closest('.code-copy-btn');
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Init theme
   const savedTheme = localStorage.getItem('kova-theme') || 'system';
   applyTheme(savedTheme);
-  
+
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
     if (localStorage.getItem('kova-theme') === 'system') {
       applyTheme('system');
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Theme functions
-window.applyTheme = function(theme) {
+window.applyTheme = function (theme) {
   if (theme === 'system') {
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
@@ -102,12 +102,12 @@ window.applyTheme = function(theme) {
   }
 };
 
-window.setTheme = function(theme) {
+window.setTheme = function (theme) {
   localStorage.setItem('kova-theme', theme);
   applyTheme(theme);
 };
 
-window.openThemeModal = function() {
+window.openThemeModal = function () {
   document.getElementById('themeModal').classList.add('open');
   const saved = localStorage.getItem('kova-theme') || 'system';
   const radio = document.querySelector(`input[name="theme"][value="${saved}"]`);
@@ -115,13 +115,28 @@ window.openThemeModal = function() {
   document.getElementById('userMenu').classList.remove('open');
 };
 
-window.closeThemeModal = function() {
+window.closeThemeModal = function () {
   document.getElementById('themeModal').classList.remove('open');
 };
 
-async function checkAuth() {
+async function initAuth(retryCount = 0) {
   try {
+    // Show a waking up message if we are retrying
+    if (retryCount > 0) {
+      const welcomeTitle = document.getElementById('welcomeTitle');
+      const welcomeSubtitle = document.getElementById('welcomeSubtitle');
+      if (welcomeTitle) welcomeTitle.textContent = 'Menyiapkan ruang kerjamu...';
+      if (welcomeSubtitle) welcomeSubtitle.textContent = 'Kova sedang membangunkan server (bisa memakan waktu hingga 50 detik)...';
+    }
+
     const res = await fetch('/auth/status');
+    const contentType = res.headers.get('content-type');
+    
+    // If Render proxy returns HTML ("Service waking up...") or server throws 503/502
+    if (!res.ok || (contentType && contentType.includes('text/html'))) {
+      throw new Error("Backend belum siap");
+    }
+
     const data = await res.json();
     
     if (!data.authenticated) {
@@ -131,19 +146,28 @@ async function checkAuth() {
     
     currentUser = data.user;
     initUser();
+    
+    // Reset welcome message
+    const welcomeTitle = document.getElementById('welcomeTitle');
+    const welcomeSubtitle = document.getElementById('welcomeSubtitle');
+    if (welcomeTitle) welcomeTitle.textContent = 'Halo, ada yang bisa dibantu?';
+    if (welcomeSubtitle) welcomeSubtitle.textContent = 'Tanya apa saja, kirim file, atau gunakan voice untuk bicara langsung ke Kova.';
+    
     await loadConversations();
     const overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.style.display = 'none';
+    
   } catch (err) {
-    console.error('Auth check failed:', err);
-    window.location.href = './index.html';
+    console.warn('Backend mungkin sedang tidur, mencoba lagi...', err);
+    // Coba lagi setiap 3 detik
+    setTimeout(() => initAuth(retryCount + 1), 3000);
   }
 }
 
 function initUser() {
   document.getElementById('userName').textContent = currentUser.name;
   document.getElementById('userEmail').textContent = currentUser.email;
-  
+
   // Avatar
   if (currentUser.avatar) {
     const avatarImg = document.getElementById('userAvatarImg');
@@ -151,7 +175,7 @@ function initUser() {
     avatarImg.style.display = 'block';
     document.getElementById('userAvatarPlaceholder').style.display = 'none';
   } else {
-    document.getElementById('userAvatarPlaceholder').textContent = 
+    document.getElementById('userAvatarPlaceholder').textContent =
       currentUser.name.charAt(0).toUpperCase();
   }
 
@@ -178,14 +202,8 @@ async function loadConversations() {
 
 function renderConversationList() {
   const convList = document.getElementById('convList');
-  
-  // Restore welcome message to ready state if it exists
-  const welcomeTitle = document.getElementById('welcomeTitle');
-  const welcomeSubtitle = document.getElementById('welcomeSubtitle');
-  if (welcomeTitle) welcomeTitle.textContent = 'Halo, ada yang bisa dibantu?';
-  if (welcomeSubtitle) welcomeSubtitle.textContent = 'Tanya apa saja, kirim file, atau gunakan voice untuk bicara langsung ke Kova.';
 
-  // Clear existing (ini juga otomatis akan menghapus skeleton karena skeletonnya ada di dalam convList)
+  // Clear existing
   convList.innerHTML = '';
 
   if (conversations.length === 0) {
@@ -193,7 +211,7 @@ function renderConversationList() {
     title.className = 'sidebar-section-title';
     title.textContent = 'Riwayat';
     convList.appendChild(title);
-    
+
     const empty = document.createElement('div');
     empty.style.cssText = 'padding: 20px 12px; text-align: center; color: var(--gray-400); font-size: 13px;';
     empty.textContent = 'Belum ada chat';
@@ -229,10 +247,10 @@ function createConvItem(conv) {
   const item = document.createElement('div');
   item.className = `conv-item ${conv.id === currentConversationId ? 'active' : ''}`;
   item.dataset.convId = conv.id;
-  
+
   const date = new Date(conv.updated_at);
   const dateStr = formatDate(date);
-  
+
   item.innerHTML = `
     <div class="conv-icon">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -258,13 +276,13 @@ function createConvItem(conv) {
       </button>
     </div>
   `;
-  
+
   item.addEventListener('click', (e) => {
     if (e.target.closest('.conv-actions')) return;
     loadConversation(conv.id);
     closeMobileSidebar();
   });
-  
+
   return item;
 }
 
@@ -272,7 +290,7 @@ function formatDate(date) {
   const now = new Date();
   const diff = now - date;
   const day = 24 * 60 * 60 * 1000;
-  
+
   if (diff < day) {
     return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   } else if (diff < 7 * day) {
@@ -286,7 +304,7 @@ async function startNewChat() {
   currentConversationId = null;
   editingMessageId = null;
   uploadedFiles = [];
-  
+
   document.getElementById('chatTitle').textContent = 'Chat Baru';
   document.getElementById('messagesContainer').innerHTML = `
     <div class="welcome-message" id="welcomeMessage">
@@ -301,13 +319,13 @@ async function startNewChat() {
       <p>Tanya apa saja, kirim file, atau gunakan voice untuk bicara langsung ke Kova.</p>
     </div>
   `;
-  
+
   resetFilePreview();
   cancelEdit();
-  
+
   // Update active state in sidebar
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
-  
+
   document.getElementById('chatTextarea').focus();
 }
 
@@ -316,26 +334,26 @@ async function loadConversation(convId) {
     currentConversationId = convId;
     editingMessageId = null;
     cancelEdit();
-    
+
     const conv = conversations.find(c => c.id === convId);
     document.getElementById('chatTitle').textContent = conv?.title || 'Chat';
-    
+
     // Update active in sidebar
     document.querySelectorAll('.conv-item').forEach(el => {
       el.classList.toggle('active', el.dataset.convId === convId);
     });
-    
+
     // Load messages
     const res = await fetch(`/api/conversations/${convId}/messages`);
     const messages = await res.json();
-    
+
     const container = document.getElementById('messagesContainer');
     container.innerHTML = '';
-    
+
     for (const msg of messages) {
       appendMessage(msg.role, msg.content, msg.files || [], msg.id, msg.is_edited);
     }
-    
+
     scrollToBottom();
   } catch (err) {
     showToast('Gagal memuat percakapan', 'error');
@@ -344,14 +362,14 @@ async function loadConversation(convId) {
 
 async function deleteConversation(event, convId) {
   event.stopPropagation();
-  
+
   try {
     await fetch(`/api/conversations/${convId}`, { method: 'DELETE' });
-    
+
     if (currentConversationId === convId) {
       startNewChat();
     }
-    
+
     conversations = conversations.filter(c => c.id !== convId);
     renderConversationList();
     showToast('Chat dihapus', 'success');
@@ -360,7 +378,7 @@ async function deleteConversation(event, convId) {
   }
 }
 
-window.togglePin = async function(event, convId, isPinned) {
+window.togglePin = async function (event, convId, isPinned) {
   event.stopPropagation();
   try {
     const res = await fetch(`/api/conversations/${convId}/pin`, {
@@ -368,21 +386,21 @@ window.togglePin = async function(event, convId, isPinned) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ is_pinned: !isPinned })
     });
-    
+
     if (res.ok) {
       const updated = await res.json();
       const idx = conversations.findIndex(c => c.id === convId);
       if (idx !== -1) {
         conversations[idx].is_pinned = updated.is_pinned;
       }
-      
+
       // Resort conversations: pinned first, then by updated_at
       conversations.sort((a, b) => {
         if (a.is_pinned && !b.is_pinned) return -1;
         if (!a.is_pinned && b.is_pinned) return 1;
         return new Date(b.updated_at) - new Date(a.updated_at);
       });
-      
+
       renderConversationList();
     }
   } catch (err) {
@@ -395,17 +413,17 @@ window.togglePin = async function(event, convId, isPinned) {
 // ============================================
 function appendMessage(role, content, files = [], msgId = null, isEdited = false) {
   const container = document.getElementById('messagesContainer');
-  
+
   // Remove welcome message
   const welcome = document.getElementById('welcomeMessage');
   if (welcome) welcome.remove();
-  
+
   const wrapper = document.createElement('div');
   wrapper.className = `message-group`;
   if (msgId) wrapper.dataset.msgId = msgId;
-  
+
   const isUser = role === 'user';
-  
+
   // Build file chips HTML
   let filesHtml = '';
   if (files && files.length > 0) {
@@ -421,7 +439,7 @@ function appendMessage(role, content, files = [], msgId = null, isEdited = false
     });
     filesHtml += '</div>';
   }
-  
+
   // Render content - markdown for AI, plain text for user
   let renderedContent = '';
   if (!isUser && content) {
@@ -431,16 +449,16 @@ function appendMessage(role, content, files = [], msgId = null, isEdited = false
   }
 
   const editedTag = isEdited ? '<div class="message-edited-tag">✏ diedit</div>' : '';
-  
-  const avatarHtml = isUser 
+
+  const avatarHtml = isUser
     ? `<div class="message-avatar user-av">
-        ${currentUser.avatar 
-          ? `<img src="${currentUser.avatar}" alt="${currentUser.name}">` 
-          : `<div class="user-avatar-placeholder" style="width:32px;height:32px;font-size:13px;">${currentUser.name.charAt(0)}</div>`
-        }
+        ${currentUser.avatar
+      ? `<img src="${currentUser.avatar}" alt="${currentUser.name}">`
+      : `<div class="user-avatar-placeholder" style="width:32px;height:32px;font-size:13px;">${currentUser.name.charAt(0)}</div>`
+    }
        </div>`
     : `<div class="message-avatar ai">K</div>`;
-  
+
   const actionsHtml = `
     <div class="message-actions">
       <button class="msg-action-btn copy-btn" onclick="copyMessage('${msgId}')">
@@ -476,7 +494,7 @@ function appendMessage(role, content, files = [], msgId = null, isEdited = false
       </div>
     </div>
   `;
-  
+
   container.appendChild(wrapper);
   return wrapper;
 }
@@ -534,7 +552,7 @@ function scrollToBottom() {
 async function sendMessage() {
   const textarea = document.getElementById('chatTextarea');
   const content = textarea.value.trim();
-  
+
   if (!content && uploadedFiles.length === 0) return;
   if (isGenerating) return;
 
@@ -563,7 +581,7 @@ async function sendMessage() {
       conversations.unshift(conv);
       renderConversationList();
       document.getElementById('chatTitle').textContent = conv.title;
-      
+
       // Update active state
       document.querySelectorAll('.conv-item').forEach(el => {
         el.classList.toggle('active', el.dataset.convId === conv.id);
@@ -600,7 +618,7 @@ async function sendMessage() {
       })
     });
     const savedMsg = await msgRes.json();
-    
+
     // Show user message
     appendMessage('user', content, filesToSend.map(f => ({ name: f.name })), savedMsg.id);
   } catch (err) {
@@ -614,7 +632,7 @@ async function sendMessage() {
 
 async function getAIResponse(userMessage, conversationId) {
   setGenerating(true);
-  
+
   // Get all messages for context
   let contextMessages = [];
   try {
@@ -630,15 +648,15 @@ async function getAIResponse(userMessage, conversationId) {
   scrollToBottom();
 
   const model = document.getElementById('modelSelect').value;
-  
+
   currentAbortController = new AbortController();
-  
+
   let aiWrapper = null;
   let aiTextEl = null;
   let fullResponse = '';
 
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch(`/api/chat?t=${Date.now()}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -659,7 +677,7 @@ async function getAIResponse(userMessage, conversationId) {
     let buffer = '';
 
     removeTypingIndicator();
-    
+
     // Create AI message bubble
     const aiMsgId = 'ai-' + Date.now();
     aiWrapper = appendMessage('ai', '', [], aiMsgId);
@@ -677,7 +695,7 @@ async function getAIResponse(userMessage, conversationId) {
         if (line.startsWith('data: ')) {
           const data = line.slice(6).trim();
           if (data === '[DONE]') break;
-          
+
           try {
             const parsed = JSON.parse(data);
             if (parsed.error) {
@@ -703,7 +721,7 @@ async function getAIResponse(userMessage, conversationId) {
 
   } catch (err) {
     removeTypingIndicator();
-    
+
     if (err.name === 'AbortError') {
       // User cancelled - show partial response if any
       if (fullResponse && aiWrapper) {
@@ -729,7 +747,7 @@ function setGenerating(state) {
   isGenerating = state;
   const sendBtn = document.getElementById('sendBtn');
   const stopBtn = document.getElementById('stopGenBtn');
-  
+
   if (state) {
     sendBtn.style.display = 'none';
     stopBtn.style.display = 'flex';
@@ -752,10 +770,10 @@ async function startEditMessage(msgId) {
   // Find message element
   const msgWrapper = document.querySelector(`[data-msg-id="${msgId}"]`);
   if (!msgWrapper) return;
-  
+
   const bubble = msgWrapper.querySelector('.message-bubble .message-text');
   const textContent = bubble?.innerText || '';
-  
+
   // Find files from the message
   const fileChips = msgWrapper.querySelectorAll('.file-chip');
   const messageFiles = [];
@@ -763,18 +781,18 @@ async function startEditMessage(msgId) {
     const name = chip.querySelector('.file-chip-name')?.textContent;
     if (name) messageFiles.push({ name });
   });
-  
+
   editingMessageId = msgId;
-  
+
   // Set textarea
   const textarea = document.getElementById('chatTextarea');
   textarea.value = textContent;
   autoResizeTextarea(textarea);
   textarea.focus();
-  
+
   // Show edit banner
   document.getElementById('editBanner').classList.add('visible');
-  
+
   // Show existing files
   if (messageFiles.length > 0) {
     uploadedFiles = messageFiles.map(f => ({
@@ -784,25 +802,25 @@ async function startEditMessage(msgId) {
     }));
     renderFilePreview();
   }
-  
+
   scrollToBottom();
 }
 
 async function sendEditedMessage(content) {
   if (!editingMessageId || !content.trim()) return;
-  
+
   const msgId = editingMessageId;
   const convId = currentConversationId;
-  
+
   cancelEdit();
-  
+
   const textarea = document.getElementById('chatTextarea');
   textarea.value = '';
   autoResizeTextarea(textarea);
-  
+
   const filesToSend = [...uploadedFiles];
   resetFilePreview();
-  
+
   try {
     // Build full content with file context
     let fullContent = content;
@@ -811,12 +829,12 @@ async function sendEditedMessage(content) {
       const fileContexts = newFiles.map(f => `\n\n[Isi file "${f.name}":]:\n${f.extractedContent}`).join('');
       fullContent = content + fileContexts;
     }
-    
+
     // Delete messages after this one
     await fetch(`/api/conversations/${convId}/messages-after/${msgId}`, {
       method: 'DELETE'
     });
-    
+
     // Update the message
     await fetch(`/api/messages/${msgId}`, {
       method: 'PUT',
@@ -826,17 +844,17 @@ async function sendEditedMessage(content) {
         files: filesToSend.map(f => ({ name: f.name }))
       })
     });
-    
+
     // Reload conversation
     await loadConversation(convId);
-    
+
     // Get AI response
     const res = await fetch(`/api/conversations/${convId}/messages`);
     const msgs = await res.json();
     const contextMessages = msgs.map(m => ({ role: m.role, content: m.content }));
-    
+
     await getAIResponse(fullContent, convId);
-    
+
   } catch (err) {
     showToast('Gagal mengedit pesan: ' + err.message, 'error');
   }
@@ -848,15 +866,15 @@ function cancelEdit() {
 }
 
 // Copy Message
-window.copyMessage = function(msgId) {
+window.copyMessage = function (msgId) {
   const msgWrapper = document.querySelector(`[data-msg-id="${msgId}"]`);
   if (!msgWrapper) return;
-  
+
   const bubble = msgWrapper.querySelector('.message-text');
   if (!bubble) return;
-  
+
   const textToCopy = bubble.innerText;
-  
+
   navigator.clipboard.writeText(textToCopy).then(() => {
     showToast('Pesan disalin!', 'success');
   }).catch(() => {
@@ -870,22 +888,22 @@ window.copyMessage = function(msgId) {
 async function handleFileSelect(event) {
   const files = Array.from(event.target.files);
   if (files.length === 0) return;
-  
+
   showToast(`Mengupload ${files.length} file...`, 'info');
-  
+
   const formData = new FormData();
   files.forEach(file => formData.append('files', file));
-  
+
   try {
     const res = await fetch('/api/upload', {
       method: 'POST',
       body: formData
     });
-    
+
     const data = await res.json();
-    
+
     if (!data.success) throw new Error(data.error);
-    
+
     data.files.forEach(f => {
       uploadedFiles.push({
         id: f.id,
@@ -895,13 +913,13 @@ async function handleFileSelect(event) {
         extractedContent: f.extractedContent
       });
     });
-    
+
     renderFilePreview();
     showToast(`${files.length} file berhasil diupload`, 'success');
   } catch (err) {
     showToast('Gagal upload file: ' + err.message, 'error');
   }
-  
+
   // Reset input
   event.target.value = '';
 }
@@ -909,14 +927,14 @@ async function handleFileSelect(event) {
 function renderFilePreview() {
   const area = document.getElementById('filePreviewArea');
   area.innerHTML = '';
-  
+
   if (uploadedFiles.length === 0) {
     area.classList.remove('has-files');
     return;
   }
-  
+
   area.classList.add('has-files');
-  
+
   uploadedFiles.forEach((file, index) => {
     const item = document.createElement('div');
     item.className = 'file-preview-item';
@@ -956,22 +974,22 @@ function startVoice() {
     showToast('Browser tidak mendukung voice input', 'error');
     return;
   }
-  
+
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechRecognition();
   recognition.lang = 'id-ID';
   recognition.continuous = true;
   recognition.interimResults = true;
-  
+
   voiceTranscript = '';
   finalTranscript = '';
-  
+
   recognition.onstart = () => {
     isRecording = true;
     isPaused = false;
     updateVoiceUI(true);
   };
-  
+
   recognition.onresult = (event) => {
     let interimTranscript = '';
     for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -985,7 +1003,7 @@ function startVoice() {
     voiceTranscript = finalTranscript + interimTranscript;
     document.getElementById('voiceTranscript').textContent = voiceTranscript || 'Mulai berbicara...';
   };
-  
+
   recognition.onerror = (event) => {
     console.error('Speech recognition error:', event.error);
     if (event.error !== 'aborted') {
@@ -993,18 +1011,18 @@ function startVoice() {
     }
     cancelVoice();
   };
-  
+
   recognition.onend = () => {
     if (isRecording && !isPaused) {
       // Auto restart if still recording
       try {
         recognition.start();
-      } catch (e) {}
+      } catch (e) { }
     }
   };
-  
+
   recognition.start();
-  
+
   // Show voice controls
   document.getElementById('voiceControls').classList.add('visible');
   document.getElementById('voiceBtn').classList.add('recording');
@@ -1017,7 +1035,7 @@ function stopVoice() {
     isRecording = false;
     isPaused = true;
   }
-  
+
   // Update UI
   const dot = document.getElementById('voiceDot');
   dot.classList.add('paused');
@@ -1025,7 +1043,7 @@ function stopVoice() {
   document.getElementById('voiceStopBtn').style.display = 'none';
   document.getElementById('voiceResumeBtn').style.display = 'inline-flex';
   document.getElementById('voiceBtn').classList.remove('recording');
-  
+
   // Set transcript to textarea
   if (voiceTranscript) {
     const textarea = document.getElementById('chatTextarea');
@@ -1036,15 +1054,15 @@ function stopVoice() {
 
 function resumeVoice() {
   if (!isPaused) return;
-  
+
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechRecognition();
   recognition.lang = 'id-ID';
   recognition.continuous = true;
   recognition.interimResults = true;
-  
+
   const existingTranscript = finalTranscript;
-  
+
   recognition.onstart = () => {
     isRecording = true;
     isPaused = false;
@@ -1054,7 +1072,7 @@ function resumeVoice() {
     document.getElementById('voiceResumeBtn').style.display = 'none';
     document.getElementById('voiceBtn').classList.add('recording');
   };
-  
+
   recognition.onresult = (event) => {
     let interimTranscript = '';
     let newFinal = '';
@@ -1070,20 +1088,20 @@ function resumeVoice() {
     voiceTranscript = finalTranscript + interimTranscript;
     document.getElementById('voiceTranscript').textContent = voiceTranscript || 'Mulai berbicara...';
   };
-  
+
   recognition.onerror = (event) => {
     if (event.error !== 'aborted') {
       showToast('Error voice: ' + event.error, 'error');
     }
     cancelVoice();
   };
-  
+
   recognition.onend = () => {
     if (isRecording && !isPaused) {
-      try { recognition.start(); } catch (e) {}
+      try { recognition.start(); } catch (e) { }
     }
   };
-  
+
   recognition.start();
 }
 
@@ -1094,10 +1112,10 @@ function cancelVoice() {
     recognition.stop();
     recognition = null;
   }
-  
+
   voiceTranscript = '';
   finalTranscript = '';
-  
+
   document.getElementById('voiceControls').classList.remove('visible');
   document.getElementById('voiceBtn').classList.remove('recording', 'active');
   document.getElementById('voiceTranscript').textContent = 'Mulai berbicara...';
@@ -1110,12 +1128,12 @@ function cancelVoice() {
 function sendVoice() {
   // Get the transcript
   const transcript = voiceTranscript.trim();
-  
+
   if (!transcript) {
     showToast('Tidak ada teks yang direkam', 'error');
     return;
   }
-  
+
   // Stop recording
   if (recognition) {
     isRecording = false;
@@ -1123,12 +1141,12 @@ function sendVoice() {
     recognition.stop();
     recognition = null;
   }
-  
+
   // Put transcript in textarea
   const textarea = document.getElementById('chatTextarea');
   textarea.value = transcript;
   autoResizeTextarea(textarea);
-  
+
   // Hide voice controls
   document.getElementById('voiceControls').classList.remove('visible');
   document.getElementById('voiceBtn').classList.remove('recording', 'active');
@@ -1136,10 +1154,10 @@ function sendVoice() {
   document.getElementById('voiceDot').classList.remove('paused');
   document.getElementById('voiceStopBtn').style.display = 'inline-flex';
   document.getElementById('voiceResumeBtn').style.display = 'none';
-  
+
   voiceTranscript = '';
   finalTranscript = '';
-  
+
   // Send immediately
   sendMessage();
 }
@@ -1202,7 +1220,7 @@ async function deleteAccount() {
   try {
     const res = await fetch('/api/user/account', { method: 'DELETE' });
     const data = await res.json();
-    
+
     if (data.success) {
       window.location.href = './index.html';
     } else {
@@ -1255,7 +1273,7 @@ function showToast(message, type = 'info') {
   toast.className = `toast ${type}`;
   toast.textContent = message;
   container.appendChild(toast);
-  
+
   setTimeout(() => {
     toast.style.opacity = '0';
     toast.style.transition = 'opacity 0.3s ease';
