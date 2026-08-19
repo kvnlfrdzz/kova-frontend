@@ -19,11 +19,7 @@
 
 <body class="chat-page">
 
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Memuat Kova...</div>
-  </div>
+  <!-- Loading Overlay dihapus agar langsung masuk ke UI dan skeleton jalan -->
 
   <!-- Sidebar Overlay (mobile) -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
@@ -51,9 +47,21 @@
     </div>
 
     <div class="sidebar-conversations" id="convList">
+      <div class="sidebar-section-title">Dipin</div>
+      <div class="skeleton-list" style="margin-bottom: 20px;">
+        <div class="skeleton-item pulse"></div>
+      </div>
       <div class="sidebar-section-title">Riwayat</div>
-      <!-- Conversations loaded here -->
-    </div>
+      <div class="skeleton-list">
+        <div class="skeleton-item pulse"></div>
+        <div class="skeleton-item pulse" style="width: 80%"></div>
+        <div class="skeleton-item pulse" style="width: 90%"></div>
+        <div class="skeleton-item pulse" style="width: 70%"></div>
+        <div class="skeleton-item pulse" style="width: 85%"></div>
+        <div class="skeleton-item pulse" style="width: 75%"></div>
+        <div class="skeleton-item pulse" style="width: 80%"></div>
+        <div class="skeleton-item pulse" style="width: 90%"></div>
+      </div>
 
     <div class="sidebar-footer">
       <div class="user-profile" id="userProfile" onclick="toggleUserMenu()">
@@ -299,7 +307,7 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <script src="./js/chat.js?v=2"></script>
+  <script src="./js/chat.js?v=3"></script>
 </body>
 
 </html>
