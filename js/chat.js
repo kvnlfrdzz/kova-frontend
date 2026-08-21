@@ -129,7 +129,7 @@ async function initAuth(retryCount = 0) {
       if (welcomeSubtitle) welcomeSubtitle.textContent = 'Kova sedang membangunkan server (bisa memakan waktu hingga 50 detik)...';
     }
 
-    const res = await fetch('/auth/status');
+    const res = await fetch(`/auth/status?t=${Date.now()}`);
     const contentType = res.headers.get('content-type');
     
     // If Render proxy returns HTML ("Service waking up...") or server throws 503/502
