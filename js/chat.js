@@ -720,7 +720,7 @@ async function getAIResponse(userMessage, conversationId) {
               fullResponse += parsed.content;
               // Render markdown
               aiTextEl.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse));
-              scrollToBottom();
+              // Removed scrollToBottom() here to prevent auto-scrolling while generating
             }
           } catch (e) {
             if (e.message !== 'Unexpected end of JSON input') {
@@ -729,6 +729,14 @@ async function getAIResponse(userMessage, conversationId) {
           }
         }
       }
+    }
+
+    // Jika AI sama sekali tidak merespons (kosong)
+    if (!fullResponse.trim()) {
+      aiTextEl.innerHTML = `<div style="color: var(--danger); font-style: italic; display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        Model AI tidak memberikan jawaban. Server pusat mungkin sedang sibuk atau model tidak tersedia.
+      </div>`;
     }
 
     // Update conversation list
