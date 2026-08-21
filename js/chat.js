@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  await checkAuth();
+  await initAuth();
 });
 
 // Theme functions
