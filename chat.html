@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css?v=2">
-  <link rel="stylesheet" href="./css/chat.css?v=4">
+  <link rel="stylesheet" href="./css/chat.css?v=5">
   <script src="./js/config.js"></script>
   <!-- Marked.js for markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -133,28 +133,14 @@
       </div>
       <div class="chat-header-right">
         <select class="model-select" id="modelSelect" onchange="handleModelChange()">
-          <optgroup label="Gemini 3.6 Flash">
-            <option value="ag/gemini-3.6-flash-high(high)">Gemini 3.6 Flash High</option>
-            <option value="ag/gemini-3.6-flash-medium(high)">Gemini 3.6 Flash Medium</option>
-            <option value="ag/gemini-3.6-flash-low(high)">Gemini 3.6 Flash Low</option>
-          </optgroup>
-          <optgroup label="Gemini 3.5 Flash">
-            <option value="ag/gemini-3.5-flash-high(high)">Gemini 3.5 Flash High</option>
-            <option value="ag/gemini-3.5-flash-low(high)">Gemini 3.5 Flash Low</option>
-            <option value="ag/gemini-3.5-flash-extra-low(high)">Gemini 3.5 Flash Extra Low</option>
-          </optgroup>
-          <optgroup label="Gemini 3 & 3.1">
-            <option value="ag/gemini-3-flash-agent(high)">Gemini 3 Flash Agent</option>
-            <option value="ag/gemini-3.1-pro-low(high)">Gemini 3.1 Pro Low</option>
-            <option value="ag/gemini-pro-agent">Gemini Pro Agent</option>
-          </optgroup>
-          <optgroup label="Claude">
-            <option value="ag/claude-sonnet-4-6(high)">Claude Sonnet 4.6</option>
-            <option value="ag/claude-opus-4-6-thinking(high)">Claude Opus 4.6 Thinking</option>
-          </optgroup>
-          <optgroup label="GPT">
-            <option value="ag/gpt-oss-120b-medium(high)">GPT-OSS 120B Medium</option>
-          </optgroup>
+          <option value="ag/gemini-3.6-flash-high(high)">Gemini 3.6 Flash High</option>
+          <option value="ag/gemini-3.6-flash-medium(high)">Gemini 3.6 Flash Medium</option>
+          <option value="ag/gemini-3.5-flash-high(high)">Gemini 3.5 Flash High</option>
+          <option value="ag/gemini-3.5-flash-low(high)">Gemini 3.5 Flash Low</option>
+          <option value="ag/gemini-3-flash-agent(high)">Gemini 3 Flash Agent</option>
+          <option value="ag/gemini-3.1-pro-low(high)">Gemini 3.1 Pro Low</option>
+          <option value="ag/claude-sonnet-4-6(high)">Claude Sonnet 4.6</option>
+          <option value="ag/claude-opus-4-6-thinking(high)">Claude Opus 4.6 Thinking</option>
         </select>
       </div>
     </div>
