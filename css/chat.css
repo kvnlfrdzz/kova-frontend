@@ -739,7 +739,7 @@
   letter-spacing: 0.5px;
 }
 
-.code-copy-btn {
+.code-action-btn {
   background: transparent;
   border: none;
   color: var(--code-header-color, #94A3B8);
@@ -751,7 +751,7 @@
   transition: color 0.15s ease;
 }
 
-.code-copy-btn:hover {
+.code-action-btn:hover {
   color: var(--white, #fff);
 }
 
@@ -762,6 +762,13 @@
   margin: 0 !important;
   border-radius: 0 !important;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+  transition: max-height 0.3s ease;
+}
+
+.code-block-wrapper.expanded pre {
+  max-height: none;
 }
 
 .message-bubble pre code {

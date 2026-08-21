@@ -41,13 +41,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="code-block-wrapper">
         <div class="code-block-header">
           <span class="code-lang">${escapeHtml(lang)}</span>
-          <button class="code-copy-btn">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            Salin Kode
-          </button>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <button class="code-action-btn code-expand-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="7 13 12 18 17 13"></polyline>
+                <polyline points="7 6 12 11 17 6"></polyline>
+              </svg>
+              Perluas
+            </button>
+            <button class="code-action-btn code-copy-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Salin
+            </button>
+          </div>
         </div>
         <pre><code class="language-${escapeHtml(lang)}">${escapeHtml(code)}</code></pre>
       </div>
@@ -59,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     gfm: true
   });
 
-  // Handle code block copy events
+  // Handle code block events
   document.addEventListener('click', (e) => {
     const copyBtn = e.target.closest('.code-copy-btn');
     if (copyBtn) {
@@ -74,6 +83,24 @@ document.addEventListener('DOMContentLoaded', async () => {
               copyBtn.innerHTML = originalHtml;
             }, 2000);
           });
+        }
+      }
+    }
+
+    const expandBtn = e.target.closest('.code-expand-btn');
+    if (expandBtn) {
+      const container = expandBtn.closest('.code-block-wrapper');
+      if (container) {
+        const isExpanded = container.classList.toggle('expanded');
+        if (isExpanded) {
+          expandBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg> Singkat`;
+        } else {
+          expandBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg> Perluas`;
+          // Optionally scroll back to the top of the block if we are far down
+          const rect = container.getBoundingClientRect();
+          if (rect.top < 65) { // 65 is header height roughly
+             container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }
       }
     }
