@@ -198,6 +198,7 @@ function initUser() {
     const select = document.getElementById('modelSelect');
     select.value = currentUser.selected_model;
     if (!select.value) select.selectedIndex = 0;
+    if (window.updateCustomModelUI) window.updateCustomModelUI();
   }
 }
 

@@ -353,30 +353,89 @@
   flex-shrink: 0;
 }
 
-.model-select {
-  padding: 6px 32px 6px 14px;
-  border: none;
+.custom-model-select {
+  position: relative;
+}
+
+.custom-model-trigger {
+  padding: 6px 12px 6px 14px;
   border-radius: var(--radius-full);
   font-size: 13px;
   font-weight: 500;
   color: var(--gray-700);
   background-color: var(--gray-100);
   cursor: pointer;
-  outline: none;
-  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  gap: 8px;
   transition: all 0.2s ease;
-  max-width: 220px;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 14px;
+  user-select: none;
 }
 
-.model-select:hover,
-.model-select:focus {
+.custom-model-trigger:hover {
   background-color: var(--gray-200);
+}
+
+.custom-model-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  width: max-content;
+  min-width: 220px;
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-model-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-model-item {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--gray-700);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.15s ease;
+  margin-bottom: 2px;
+}
+
+.custom-model-item:last-child {
+  margin-bottom: 0;
+}
+
+.custom-model-item:hover {
+  background: var(--gray-100);
+}
+
+.custom-model-item.active {
+  background: var(--primary-ultra-light);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.custom-model-check {
+  display: none;
+}
+
+.custom-model-item.active .custom-model-check {
+  display: block;
+  color: var(--primary);
 }
 
 /* ============================================

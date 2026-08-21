@@ -132,7 +132,8 @@
         <span class="chat-title" id="chatTitle">Chat Baru</span>
       </div>
       <div class="chat-header-right">
-        <select class="model-select" id="modelSelect" onchange="handleModelChange()">
+        <!-- Hidden Native Select (Used by chat.js for logic) -->
+        <select id="modelSelect" style="display:none;" onchange="handleModelChange()">
           <option value="ag/gemini-3.6-flash-high(high)">Gemini 3.6 Flash High</option>
           <option value="ag/gemini-3.6-flash-medium(high)">Gemini 3.6 Flash Medium</option>
           <option value="ag/gemini-3.5-flash-high(high)">Gemini 3.5 Flash High</option>
@@ -142,6 +143,77 @@
           <option value="ag/claude-sonnet-4-6(high)">Claude Sonnet 4.6</option>
           <option value="ag/claude-opus-4-6-thinking(high)">Claude Opus 4.6 Thinking</option>
         </select>
+        
+        <!-- Custom UI Select -->
+        <div class="custom-model-select" id="customModelSelect">
+          <div class="custom-model-trigger" onclick="toggleCustomModelMenu(event)">
+            <span id="customModelLabel">Gemini 3.5 Flash High</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="custom-model-menu" id="customModelMenu">
+            <!-- Items injected by JS -->
+          </div>
+        </div>
+
+        <script>
+          // Custom Dropdown Logic
+          window.updateCustomModelUI = function() {
+            const nativeSelect = document.getElementById('modelSelect');
+            const customLabel = document.getElementById('customModelLabel');
+            const customMenu = document.getElementById('customModelMenu');
+            if(nativeSelect.options[nativeSelect.selectedIndex]) {
+              customLabel.textContent = nativeSelect.options[nativeSelect.selectedIndex].text;
+              
+              // Sync active class
+              customMenu.querySelectorAll('.custom-model-item').forEach(i => {
+                if (i.dataset.value === nativeSelect.value) {
+                  i.classList.add('active');
+                } else {
+                  i.classList.remove('active');
+                }
+              });
+            }
+          };
+
+          document.addEventListener('DOMContentLoaded', () => {
+            const nativeSelect = document.getElementById('modelSelect');
+            const customMenu = document.getElementById('customModelMenu');
+            
+            // Build custom menu from native options
+            Array.from(nativeSelect.options).forEach(opt => {
+              const item = document.createElement('div');
+              item.className = 'custom-model-item' + (opt.selected ? ' active' : '');
+              item.dataset.value = opt.value;
+              item.innerHTML = `
+                <span>${opt.text}</span>
+                <svg class="custom-model-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              `;
+              item.onclick = () => {
+                nativeSelect.value = opt.value;
+                nativeSelect.dispatchEvent(new Event('change')); // Trigger chat.js logic
+                window.updateCustomModelUI();
+                customMenu.classList.remove('active');
+              };
+              customMenu.appendChild(item);
+            });
+            
+            window.updateCustomModelUI();
+          });
+
+          function toggleCustomModelMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('customModelMenu');
+            menu.classList.toggle('active');
+          }
+
+          // Close dropdown when clicking outside
+          document.addEventListener('click', (e) => {
+            const menu = document.getElementById('customModelMenu');
+            if (menu && menu.classList.contains('active') && !e.target.closest('#customModelSelect')) {
+              menu.classList.remove('active');
+            }
+          });
+        </script>
       </div>
     </div>
 
@@ -304,7 +376,7 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <script src="./js/chat.js?v=5"></script>
+  <script src="./js/chat.js?v=6"></script>
 </body>
 
 </html>
