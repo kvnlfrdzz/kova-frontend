@@ -120,46 +120,60 @@ window.closeThemeModal = function () {
 };
 
 async function initAuth(retryCount = 0) {
+  const MAX_RETRIES = 20; // 20 x 3 detik = 60 detik maks
+
+  // Tampilkan animasi loading di sidebar saat pertama kali
+  const wakeTitle = document.getElementById('wakeTitle');
+  const wakeBar = document.getElementById('wakeProgressBar');
+  const wakeMsg = document.getElementById('wakeMessage');
+
+  if (retryCount > 0 && wakeTitle) {
+    wakeTitle.style.display = 'flex';
+    const secs = retryCount * 3;
+    if (wakeMsg) wakeMsg.textContent = `Menghubungkan ke server... (${secs}s)`;
+    if (wakeBar) wakeBar.style.width = Math.min((secs / 60) * 100, 100) + '%';
+  }
+
+  if (retryCount >= MAX_RETRIES) {
+    // Timeout - server tidak bisa dibangunkan
+    if (wakeTitle) {
+      if (wakeMsg) wakeMsg.textContent = 'Server tidak merespons. Coba refresh halaman.';
+      if (wakeBar) wakeBar.style.background = 'var(--danger, #ef4444)';
+    }
+    return;
+  }
+
   try {
-    // Show a waking up message if we are retrying
-    if (retryCount > 0) {
-      const welcomeTitle = document.getElementById('welcomeTitle');
-      const welcomeSubtitle = document.getElementById('welcomeSubtitle');
-      if (welcomeTitle) welcomeTitle.textContent = 'Menyiapkan ruang kerjamu...';
-      if (welcomeSubtitle) welcomeSubtitle.textContent = 'Kova sedang membangunkan server (bisa memakan waktu hingga 50 detik)...';
+    const res = await fetch(`/auth/status?t=${Date.now()}`);
+    const contentType = res.headers.get('content-type') || '';
+
+    // Render mengirim HTML ketika service sedang bangun (503/502)
+    if (res.status === 503 || res.status === 502 || contentType.includes('text/html')) {
+      throw new Error('Server sedang bangun');
     }
 
-    const res = await fetch(`/auth/status?t=${Date.now()}`);
-    const contentType = res.headers.get('content-type');
-    
-    // If Render proxy returns HTML ("Service waking up...") or server throws 503/502
-    if (!res.ok || (contentType && contentType.includes('text/html'))) {
-      throw new Error("Backend belum siap");
+    // Error jaringan lainnya - retry
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
     }
 
     const data = await res.json();
-    
+
+    // Sembunyikan banner wake-up jika ada
+    if (wakeTitle) wakeTitle.style.display = 'none';
+
     if (!data.authenticated) {
+      // Belum login — redirect ke halaman login
       window.location.href = './index.html';
       return;
     }
-    
+
     currentUser = data.user;
     initUser();
-    
-    // Reset welcome message
-    const welcomeTitle = document.getElementById('welcomeTitle');
-    const welcomeSubtitle = document.getElementById('welcomeSubtitle');
-    if (welcomeTitle) welcomeTitle.textContent = 'Halo, ada yang bisa dibantu?';
-    if (welcomeSubtitle) welcomeSubtitle.textContent = 'Tanya apa saja, kirim file, atau gunakan voice untuk bicara langsung ke Kova.';
-    
     await loadConversations();
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.style.display = 'none';
-    
+
   } catch (err) {
-    console.warn('Backend mungkin sedang tidur, mencoba lagi...', err);
-    // Coba lagi setiap 3 detik
+    console.warn(`[initAuth] Retry ${retryCount + 1}/${MAX_RETRIES}:`, err.message);
     setTimeout(() => initAuth(retryCount + 1), 3000);
   }
 }

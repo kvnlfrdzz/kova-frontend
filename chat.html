@@ -160,6 +160,17 @@
 
     <!-- Messages Container -->
     <div class="messages-container" id="messagesContainer">
+      <!-- Wake-up banner: only shows when server is sleeping -->
+      <div id="wakeTitle" style="display:none; align-items:center; gap:10px; background:var(--surface-2,#1e2a3a); border:1px solid var(--border,#2d3d50); border-radius:12px; padding:12px 16px; margin:0 0 16px 0; font-size:13px; color:var(--gray-300,#94a3b8);">
+        <span style="display:inline-block; width:14px; height:14px; border:2px solid var(--primary,#38bdf8); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; flex-shrink:0;"></span>
+        <div style="flex:1;">
+          <span id="wakeMessage">Menghubungkan ke server...</span>
+          <div style="height:3px; background:var(--border,#2d3d50); border-radius:4px; margin-top:6px;">
+            <div id="wakeProgressBar" style="height:100%; width:0%; background:var(--primary,#38bdf8); border-radius:4px; transition:width 0.5s ease;"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="welcome-message" id="welcomeMessage">
         <div class="welcome-logo">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
@@ -169,10 +180,9 @@
             <circle cx="20" cy="22" r="4" fill="white" />
           </svg>
         </div>
-        <h2 id="welcomeTitle">Menyiapkan ruang kerjamu...</h2>
+        <h2 id="welcomeTitle">Halo, ada yang bisa dibantu?</h2>
         <p id="welcomeSubtitle">
-          <span style="display:inline-block; width:14px; height:14px; border:2px solid var(--primary); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; margin-right:8px; vertical-align:middle;"></span>
-          Sedang menghubungkan ke server dengan aman. Mohon tunggu beberapa saat.
+          Tanya apa saja, kirim file, atau gunakan voice untuk bicara langsung ke Kova.
         </p>
         <style>
           @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -307,7 +317,7 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <script src="./js/chat.js?v=3"></script>
+  <script src="./js/chat.js?v=4"></script>
 </body>
 
 </html>

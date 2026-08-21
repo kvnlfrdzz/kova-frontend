@@ -1357,3 +1357,29 @@
     font-size: 12px;
   }
 }
+
+/* ============================================
+   SKELETON LOADING
+   ============================================ */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px;
+}
+
+.skeleton-item {
+  height: 36px;
+  border-radius: 8px;
+  background: var(--gray-200, #e2e8f0);
+  width: 100%;
+}
+
+.pulse {
+  animation: skeletonPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
