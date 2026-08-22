@@ -1519,6 +1519,16 @@
     padding: 10px 16px;
   }
 
+  .conv-actions {
+    display: flex !important;
+    opacity: 0.9;
+  }
+  
+  .message-actions {
+    display: flex !important;
+    opacity: 0.9;
+  }
+
   .custom-model-menu {
     right: 16px;
     left: 16px;
