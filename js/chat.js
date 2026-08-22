@@ -1298,20 +1298,28 @@ async function handleModelChange() {
 }
 
 // ============================================
-// MOBILE SIDEBAR
 // ============================================
-function toggleMobileSidebar() {
+// SIDEBAR TOGGLE (DESKTOP & MOBILE)
+// ============================================
+function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.toggle('mobile-open');
-  overlay.classList.toggle('visible');
+  
+  if (window.innerWidth <= 768) {
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('visible');
+  } else {
+    sidebar.classList.toggle('collapsed-desktop');
+  }
 }
 
 function closeMobileSidebar() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.remove('mobile-open');
-  overlay.classList.remove('visible');
+  if (window.innerWidth <= 768) {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('visible');
+  }
 }
 
 // ============================================
