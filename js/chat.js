@@ -1415,3 +1415,42 @@ function escapeHtml(text) {
   div.appendChild(document.createTextNode(text));
   return div.innerHTML;
 }
+
+// ============================================
+// RUBBER BAND OVERSCROLL EFFECT
+// ============================================
+function addRubberBand(el, cls = 'messages-container') {
+  if (!el) return;
+  let bounce = null;
+
+  el.addEventListener('scroll', () => {
+    const atTop = el.scrollTop <= 0;
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+
+    if (atTop && el.scrollTop < 0) {
+      el.classList.remove('overscroll-bottom', 'overscroll-reset');
+      el.classList.add('overscroll-top');
+    } else if (atBottom) {
+      el.classList.remove('overscroll-top', 'overscroll-reset');
+      el.classList.add('overscroll-bottom');
+    } else {
+      el.classList.remove('overscroll-top', 'overscroll-bottom');
+      el.classList.add('overscroll-reset');
+    }
+
+    clearTimeout(bounce);
+    bounce = setTimeout(() => {
+      el.classList.remove('overscroll-top', 'overscroll-bottom');
+      el.classList.add('overscroll-reset');
+      setTimeout(() => el.classList.remove('overscroll-reset'), 400);
+    }, 80);
+  }, { passive: true });
+}
+
+// Init rubber band on all scrollable areas
+document.addEventListener('DOMContentLoaded', () => {
+  const msgContainer = document.getElementById('messagesContainer');
+  const convList = document.querySelector('.conv-list');
+  if (msgContainer) addRubberBand(msgContainer, 'messages-container');
+  if (convList) addRubberBand(convList, 'conv-list');
+});
