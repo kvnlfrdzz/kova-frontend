@@ -263,7 +263,7 @@
   bottom: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: var(--glass-bg-heavy);
+  background: var(--dropdown-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
@@ -409,7 +409,7 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: var(--glass-bg-heavy);
+  background: var(--dropdown-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);

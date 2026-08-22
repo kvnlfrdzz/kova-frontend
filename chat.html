@@ -8,8 +8,8 @@
   <link rel="icon" href="./favicon.svg?v=2" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css?v=3">
-  <link rel="stylesheet" href="./css/chat.css?v=8">
+  <link rel="stylesheet" href="./css/style.css?v=4">
+  <link rel="stylesheet" href="./css/chat.css?v=9">
   <script src="./js/config.js"></script>
   <!-- Marked.js for markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -132,16 +132,20 @@
         <span class="chat-title" id="chatTitle">Chat Baru</span>
       </div>
       <div class="chat-header-right">
-        <!-- Hidden Native Select (Used by chat.js for logic) -->
         <select id="modelSelect" style="display:none;" onchange="handleModelChange()">
-          <option value="ag/gemini-3.6-flash-high(high)">Gemini 3.6 Flash High</option>
-          <option value="ag/gemini-3.6-flash-medium(high)">Gemini 3.6 Flash Medium</option>
-          <option value="ag/gemini-3.5-flash-high(high)">Gemini 3.5 Flash High</option>
-          <option value="ag/gemini-3.5-flash-low(high)">Gemini 3.5 Flash Low</option>
+          <option value="ag/gemini-3.6-flash-high(high)">Gemini 3.6 Flash (High)</option>
+          <option value="ag/gemini-3.6-flash-medium(high)">Gemini 3.6 Flash (Medium)</option>
+          <option value="ag/gemini-3.6-flash-low(high)">Gemini 3.6 Flash (Low)</option>
+          <option value="ag/gemini-3.5-flash-high(high)">Gemini 3.5 Flash (High)</option>
           <option value="ag/gemini-3-flash-agent(high)">Gemini 3 Flash Agent</option>
-          <option value="ag/gemini-3.1-pro-low(high)">Gemini 3.1 Pro Low</option>
-          <option value="ag/claude-sonnet-4-6(high)">Claude Sonnet 4.6</option>
-          <option value="ag/claude-opus-4-6-thinking(high)">Claude Opus 4.6 Thinking</option>
+          <option value="ag/gemini-3.5-flash-low(high)">Gemini 3.5 Flash (Medium)</option>
+          <option value="ag/gemini-3.5-flash-extra-low(high)">Gemini 3.5 Flash (Low)</option>
+          <option value="ag/gemini-pro-agent(high)">Gemini 3.1 Pro (High)</option>
+          <option value="ag/gemini-3.1-pro-low(high)">Gemini 3.1 Pro (Low)</option>
+          <option value="ag/claude-sonnet-4-6(max)">Claude Sonnet 4.6 (Thinking)</option>
+          <option value="ag/claude-opus-4-6-thinking(max)">Claude Opus 4.6 (Thinking)</option>
+          <option value="ag/gemini-3-flash(high)">Gemini 3 Flash</option>
+          <option value="ag/gpt-oss-120b-medium(high)">GPT-OSS 120B (Medium)</option>
         </select>
         
         <!-- Custom UI Select -->
@@ -376,7 +380,7 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <script src="./js/chat.js?v=10"></script>
+  <script src="./js/chat.js?v=11"></script>
 </body>
 
 </html>

@@ -19,6 +19,7 @@
   --bg-gradient: linear-gradient(135deg, #e8eeff 0%, #f0f4ff 30%, #dde6ff 60%, #edf1ff 100%);
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-bg-heavy: rgba(255, 255, 255, 0.72);
+  --dropdown-bg: rgba(255, 255, 255, 0.95);
   --glass-border: rgba(255, 255, 255, 0.7);
   --glass-border-subtle: rgba(0, 0, 0, 0.06);
   --glass-blur: 24px;
@@ -83,6 +84,7 @@
   --bg-gradient: linear-gradient(135deg, #0a0e1a 0%, #0f1729 30%, #131b2e 60%, #0d1220 100%);
   --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-bg-heavy: rgba(255, 255, 255, 0.07);
+  --dropdown-bg: rgba(15, 23, 42, 0.95);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-border-subtle: rgba(255, 255, 255, 0.04);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);

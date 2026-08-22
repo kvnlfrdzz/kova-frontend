@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   await initAuth();
+  updateSidebarIcon();
 });
 
 // Theme functions
