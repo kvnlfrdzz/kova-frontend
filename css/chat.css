@@ -42,13 +42,17 @@
 }
 
 @keyframes floatOrbChat {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-30px, 30px); }
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(-10vw, 15vh) scale(1.1) rotate(120deg); }
+  66% { transform: translate(5vw, 10vh) scale(0.9) rotate(240deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(360deg); }
 }
 
 @keyframes floatOrbChat2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(20px, -20px); }
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(15vw, -10vh) scale(1.15) rotate(-120deg); }
+  66% { transform: translate(-5vw, -15vh) scale(0.85) rotate(-240deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(-360deg); }
 }
 
 /* ============================================
@@ -915,6 +919,13 @@
   border-bottom-left-radius: var(--radius-sm);
   width: fit-content;
   border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+  animation: breathingGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes breathingGlow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15); }
+  50% { box-shadow: 0 4px 25px rgba(14, 165, 233, 0.4); }
 }
 
 .typing-dot {
