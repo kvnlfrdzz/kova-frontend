@@ -1,5 +1,5 @@
 /* ============================================
-   GLOBAL STYLES
+   GLOBAL STYLES — iOS 26 LIQUID GLASS
    ============================================ */
 * {
   margin: 0;
@@ -8,11 +8,25 @@
 }
 
 :root {
-  --primary: #38BDF8;
-  --primary-dark: #0EA5E9;
-  --primary-light: #BAE6FD;
-  --primary-ultra-light: #F0F9FF;
+  /* Primary */
+  --primary: #0EA5E9;
+  --primary-dark: #0284C7;
+  --primary-light: #7DD3FC;
+  --primary-ultra-light: rgba(14, 165, 233, 0.1);
+
+  /* Surfaces — Light Liquid Glass */
   --white: #FFFFFF;
+  --bg-gradient: linear-gradient(135deg, #e8eeff 0%, #f0f4ff 30%, #dde6ff 60%, #edf1ff 100%);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-border-subtle: rgba(0, 0, 0, 0.06);
+  --glass-blur: 24px;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  /* Grays */
   --gray-50: #F8FAFC;
   --gray-100: #F1F5F9;
   --gray-200: #E2E8F0;
@@ -23,40 +37,62 @@
   --gray-700: #334155;
   --gray-800: #1E293B;
   --gray-900: #0F172A;
+
+  /* Status */
   --danger: #EF4444;
   --danger-light: #FEF2F2;
   --success: #10B981;
   --warning: #F59E0B;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
-  --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 40px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.04);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-full: 9999px;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --code-bg: #1E293B;
+  /* Font */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Code */
+  --code-bg: #1a1b2e;
   --code-color: #E2E8F0;
-  --code-header-bg: #334155;
+  --code-header-bg: #252640;
   --code-header-color: #94A3B8;
+
+  /* AI Bubble */
+  --ai-bubble-bg: rgba(255, 255, 255, 0.6);
+  --ai-bubble-border: rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="dark"] {
   --primary: #38BDF8;
   --primary-dark: #0EA5E9;
   --primary-light: #0284C7;
-  --primary-ultra-light: #0C4A6E;
-  
-  --white: #0F172A;
-  --gray-50: #1E293B;
-  --gray-100: #334155;
-  --gray-200: #475569;
-  --gray-300: #64748B;
+  --primary-ultra-light: rgba(56, 189, 248, 0.1);
+
+  --white: #0B0F1A;
+  --bg-gradient: linear-gradient(135deg, #0a0e1a 0%, #0f1729 30%, #131b2e 60%, #0d1220 100%);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-subtle: rgba(255, 255, 255, 0.04);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  --gray-50: #111827;
+  --gray-100: #1E293B;
+  --gray-200: #2D3A4E;
+  --gray-300: #475569;
   --gray-400: #94A3B8;
   --gray-500: #CBD5E1;
   --gray-600: #E2E8F0;
@@ -64,46 +100,98 @@
   --gray-800: #F8FAFC;
   --gray-900: #FFFFFF;
 
-  --ai-bubble-bg: #1E293B;
-  --ai-bubble-border: #334155;
+  --danger-light: rgba(239, 68, 68, 0.15);
 
-  --code-bg: #0F172A;
+  --ai-bubble-bg: rgba(255, 255, 255, 0.04);
+  --ai-bubble-border: rgba(255, 255, 255, 0.06);
+
+  --code-bg: #0d1117;
   --code-color: #E2E8F0;
-  --code-header-bg: #1E293B;
-  --code-header-color: #94A3B8;
+  --code-header-bg: #161b22;
+  --code-header-color: #8b949e;
 }
 
 body {
   font-family: var(--font);
-  background: var(--gray-50);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--gray-800);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
-   LOGIN PAGE
+   LOGIN PAGE — LIQUID GLASS
    ============================================ */
 .login-page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient glow orbs */
+.login-page::before,
+.login-page::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.login-page::before {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #38bdf8 0%, transparent 70%);
+  top: -100px;
+  right: -100px;
+  animation: floatOrb1 8s ease-in-out infinite;
+}
+
+.login-page::after {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #818cf8 0%, transparent 70%);
+  bottom: -80px;
+  left: -80px;
+  animation: floatOrb2 10s ease-in-out infinite;
+}
+
+@keyframes floatOrb1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-30px, 30px); }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -25px); }
 }
 
 .login-container {
   width: 100%;
   max-width: 420px;
   padding: 20px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease;
 }
 
 .login-card {
-  background: var(--white);
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border-radius: var(--radius-xl);
   padding: 40px;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(56, 189, 248, 0.15);
+  box-shadow: var(--glass-shadow-lg);
+  border: 1px solid var(--glass-border);
 }
 
 .logo-section {
@@ -140,23 +228,25 @@ body {
   gap: 12px;
   width: 100%;
   padding: 13px 20px;
-  background: var(--white);
-  border: 1.5px solid var(--gray-200);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
   font-size: 15px;
   font-weight: 500;
-  color: var(--gray-700);
+  color: var(--gray-800);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  font-family: var(--font);
 }
 
 .btn-google:hover {
+  background: var(--glass-bg-heavy);
   border-color: var(--primary);
-  background: var(--primary-ultra-light);
-  color: var(--primary-dark);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12), var(--glass-shadow);
+  transform: translateY(-2px);
 }
 
 .login-footer {
@@ -171,7 +261,7 @@ body {
 }
 
 /* ============================================
-   SCROLLBAR
+   SCROLLBAR — GLASS
    ============================================ */
 ::-webkit-scrollbar {
   width: 6px;
@@ -183,10 +273,29 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-300);
+  background: rgba(148, 163, 184, 0.3);
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-400);
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

@@ -1301,6 +1301,18 @@ async function handleModelChange() {
 // ============================================
 // SIDEBAR TOGGLE (DESKTOP & MOBILE)
 // ============================================
+const ICON_MENU = `<line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>`;
+const ICON_CLOSE = `<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>`;
+
+function updateSidebarIcon() {
+  const icon = document.getElementById('sidebarToggleIcon');
+  if (!icon) return;
+  const sidebar = document.getElementById('sidebar');
+  const isHidden = sidebar.classList.contains('collapsed-desktop') || 
+                   (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-open'));
+  icon.innerHTML = isHidden ? ICON_MENU : ICON_CLOSE;
+}
+
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
@@ -1311,6 +1323,7 @@ function toggleSidebar() {
   } else {
     sidebar.classList.toggle('collapsed-desktop');
   }
+  updateSidebarIcon();
 }
 
 function closeMobileSidebar() {
@@ -1320,6 +1333,7 @@ function closeMobileSidebar() {
     sidebar.classList.remove('mobile-open');
     overlay.classList.remove('visible');
   }
+  updateSidebarIcon();
 }
 
 // ============================================
