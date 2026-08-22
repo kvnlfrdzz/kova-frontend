@@ -262,8 +262,9 @@ function renderConversationList() {
     return;
   }
 
-  const pinned = conversations.filter(c => c.is_pinned);
-  const unpinned = conversations.filter(c => !c.is_pinned);
+  const pinned = conversations.filter(c => c.is_pinned && !c.is_archived);
+  const archived = conversations.filter(c => c.is_archived);
+  const unpinned = conversations.filter(c => !c.is_pinned && !c.is_archived);
 
   if (pinned.length > 0) {
     const title = document.createElement('div');
@@ -281,6 +282,16 @@ function renderConversationList() {
     title.textContent = 'Riwayat';
     convList.appendChild(title);
     unpinned.forEach(conv => {
+      convList.appendChild(createConvItem(conv));
+    });
+  }
+
+  if (archived.length > 0) {
+    const title = document.createElement('div');
+    title.className = 'sidebar-section-title';
+    title.textContent = 'Diarsipkan';
+    convList.appendChild(title);
+    archived.forEach(conv => {
       convList.appendChild(createConvItem(conv));
     });
   }
@@ -309,6 +320,13 @@ function createConvItem(conv) {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="${conv.is_pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="17" x2="12" y2="22"></line>
           <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.89A2 2 0 0 0 5 15.24Z"></path>
+        </svg>
+      </button>
+      <button class="conv-action-btn archive" onclick="toggleArchive(event, '${conv.id}', ${conv.is_archived})" title="${conv.is_archived ? 'Batal Arsip' : 'Arsip'}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="${conv.is_archived ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+          <rect x="1" y="3" width="22" height="5"></rect>
+          <line x1="10" y1="12" x2="14" y2="12"></line>
         </svg>
       </button>
       <button class="conv-action-btn delete" onclick="deleteConversation(event, '${conv.id}')" title="Hapus">
@@ -441,6 +459,8 @@ window.togglePin = async function (event, convId, isPinned) {
       conversations.sort((a, b) => {
         if (a.is_pinned && !b.is_pinned) return -1;
         if (!a.is_pinned && b.is_pinned) return 1;
+        if (a.is_archived && !b.is_archived) return 1;
+        if (!a.is_archived && b.is_archived) return -1;
         return new Date(b.updated_at) - new Date(a.updated_at);
       });
 
@@ -448,6 +468,38 @@ window.togglePin = async function (event, convId, isPinned) {
     }
   } catch (err) {
     showToast('Gagal mengubah pin', 'error');
+  }
+}
+
+window.toggleArchive = async function (event, convId, isArchived) {
+  event.stopPropagation();
+  try {
+    const res = await fetch(`/api/conversations/${convId}/archive`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_archived: !isArchived })
+    });
+
+    if (res.ok) {
+      const updated = await res.json();
+      const idx = conversations.findIndex(c => c.id === convId);
+      if (idx !== -1) {
+        conversations[idx].is_archived = updated.is_archived;
+        conversations[idx].is_pinned = updated.is_pinned; // Unpinned if archived
+      }
+
+      conversations.sort((a, b) => {
+        if (a.is_pinned && !b.is_pinned) return -1;
+        if (!a.is_pinned && b.is_pinned) return 1;
+        if (a.is_archived && !b.is_archived) return 1;
+        if (!a.is_archived && b.is_archived) return -1;
+        return new Date(b.updated_at) - new Date(a.updated_at);
+      });
+
+      renderConversationList();
+    }
+  } catch (err) {
+    showToast('Gagal mengarsipkan chat', 'error');
   }
 };
 
